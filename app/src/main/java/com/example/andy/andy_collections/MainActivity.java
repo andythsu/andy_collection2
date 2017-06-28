@@ -6,13 +6,18 @@ import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.text.TextUtils;
+import android.util.TypedValue;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 
+import org.w3c.dom.Text;
+
 import static android.R.attr.id;
+import static android.R.attr.label;
 
 public class MainActivity extends AppCompatActivity {
     DBActivity db;
@@ -25,6 +30,8 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         db = new DBActivity(this);
 
+
+        /* initializes text fields and buttons */
         name = (EditText) findViewById(R.id.name_field_text);
         location = (EditText) findViewById(R.id.location_field_text);
         submit_btn = (Button) findViewById(R.id.submit_btn);
@@ -81,7 +88,7 @@ public class MainActivity extends AppCompatActivity {
 
     public void delete() {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setTitle("Enter Id");
+        builder.setTitle("Enter ID");
 
         final EditText input = new EditText(this);
         builder.setView(input);
@@ -94,7 +101,7 @@ public class MainActivity extends AppCompatActivity {
                     if (db.deleteById(user_input)) {
                         toast("Data deleted");
                     } else {
-                        toast("Data failed to delete");
+                        toast("Failed to delete");
                     }
                 } catch (NumberFormatException e) {
                     toast("Enter a valid number");
@@ -136,6 +143,14 @@ public class MainActivity extends AppCompatActivity {
                 }
             }
         });
+
+        builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener(){
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+                dialogInterface.cancel();
+            }
+        });
+
         builder.show();
         System.out.println("update button clicked");
     }
@@ -145,12 +160,24 @@ public class MainActivity extends AppCompatActivity {
         final EditText name_input = new EditText(this);
         final EditText location_input = new EditText(this);
 
+        final TextView name_label = new TextView(this);
+        final TextView location_label = new TextView(this);
+
+        /* initializes the input fields */
         name_input.setText(name);
         location_input.setText(location);
 
+        /* initializes the labels */
+        name_label.setText("Name: ");
+        name_label.setTextSize(TypedValue.COMPLEX_UNIT_SP, 20);
+        location_label.setText("Location: ");
+        location_label.setTextSize(TypedValue.COMPLEX_UNIT_SP, 20);
+
         LinearLayout ll = new LinearLayout(this);
         ll.setOrientation(LinearLayout.VERTICAL);
+        ll.addView(name_label);
         ll.addView(name_input);
+        ll.addView(location_label);
         ll.addView(location_input);
 
         builder.setView(ll);
@@ -184,7 +211,7 @@ public class MainActivity extends AppCompatActivity {
             StringBuffer buffer = new StringBuffer();
             while (res.moveToNext()) {
                 System.out.println();
-                buffer.append("Id: " + res.getString(0) + "\n");
+                buffer.append("ID: " + res.getString(0) + "\n");
                 buffer.append("Name: " + res.getString(1) + "\n");
                 buffer.append("Location: " + res.getString(2) + "\n");
                 buffer.append("\n"); //skips at the end of every row
